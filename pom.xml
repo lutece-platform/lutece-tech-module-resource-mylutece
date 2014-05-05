@@ -10,7 +10,7 @@
 	<artifactId>module-resource-mylutece</artifactId>
 	<packaging>lutece-plugin</packaging>
 	<version>1.0.0-SNAPSHOT</version>
-	<name>Lutece MyLutece resource module</name>
+	<name>Lutece resource MyLutece module</name>
 
 	<repositories>
 		<repository>
