@@ -63,7 +63,7 @@ public class MyLuteceResourceProvider implements IResourceProvider
      */
     public MyLuteceResourceProvider( )
     {
-        _listResourceType = new ArrayList<IResourceType>( 1 );
+        _listResourceType = new ArrayList<>( 1 );
         _resourceType = new ResourceTypeDefaultImplementation( MyLuteceResource.LUTECE_USER_RESOURCE_TYPE,
                 I18nService.getLocalizedString( MESSAGE_LUTECE_USER_DESCRIPTION, Locale.getDefault( ) ) );
         _listResourceType.add( _resourceType );
@@ -114,6 +114,6 @@ public class MyLuteceResourceProvider implements IResourceProvider
     public List<IResource> getListResources( String strResourceTypeName )
     {
         // it is not possible to get the list of mylutece users
-        return new ArrayList<IResource>( 0 );
+        return new ArrayList<>( 0 );
     }
 }
