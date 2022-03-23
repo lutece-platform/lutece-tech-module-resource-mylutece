@@ -36,7 +36,6 @@ package fr.paris.lutece.plugins.resource.modules.mylutece.business;
 import fr.paris.lutece.plugins.resource.business.IResource;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 
-
 /**
  * Class that implement both IResource and IExtendableResource interfaces
  */
@@ -54,7 +53,9 @@ public class MyLuteceResource implements IResource
 
     /**
      * Creates a new MyLuteceResource from a lutece user
-     * @param user the user to read data from
+     * 
+     * @param user
+     *            the user to read data from
      */
     public MyLuteceResource( LuteceUser user )
     {
