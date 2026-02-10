@@ -43,6 +43,10 @@ import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.LuteceUserService;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -50,22 +54,25 @@ import java.util.Locale;
 /**
  * Resource provider for mylutece users
  */
+@ApplicationScoped
+@Named( "resource-mylutece.myLuteceResourceProvider" )
 public class MyLuteceResourceProvider implements IResourceProvider
 {
     private static final String MESSAGE_LUTECE_USER_DESCRIPTION = "module.resource.mylutece.luteceUserDescription";
 
     private List<IResourceType> _listResourceType;
-    private IResourceType _resourceType;
+
+    @Inject
+    private ResourceCacheService _resourceCacheService;
 
     /**
      * Default constructor
      */
     public MyLuteceResourceProvider( )
     {
-        _listResourceType = new ArrayList<IResourceType>( 1 );
-        _resourceType = new ResourceTypeDefaultImplementation( MyLuteceResource.LUTECE_USER_RESOURCE_TYPE,
-                I18nService.getLocalizedString( MESSAGE_LUTECE_USER_DESCRIPTION, Locale.getDefault( ) ) );
-        _listResourceType.add( _resourceType );
+        _listResourceType = new ArrayList<>( 1 );
+        _listResourceType.add( new ResourceTypeDefaultImplementation( MyLuteceResource.LUTECE_USER_RESOURCE_TYPE,
+                I18nService.getLocalizedString( MESSAGE_LUTECE_USER_DESCRIPTION, Locale.getDefault( ) ) ) );
     }
 
     /**
@@ -93,16 +100,18 @@ public class MyLuteceResourceProvider implements IResourceProvider
     public IResource getResource( String strIdResource, String strResourceTypeName )
     {
         String strCacheKey = ResourceCacheService.getResourceCacheKey( strIdResource, strResourceTypeName );
-        MyLuteceResource resource = (MyLuteceResource) ResourceCacheService.getInstance( ).getFromCache( strCacheKey );
+        MyLuteceResource resource = (MyLuteceResource) _resourceCacheService.get( strCacheKey );
+
         if ( resource == null )
         {
             LuteceUser user = LuteceUserService.getLuteceUserFromName( strIdResource );
             if ( user != null )
             {
                 resource = new MyLuteceResource( user );
-                ResourceCacheService.getInstance( ).putInCache( strCacheKey, resource );
+                _resourceCacheService.put( strCacheKey, resource );
             }
         }
+
         return resource;
     }
 
@@ -113,6 +122,6 @@ public class MyLuteceResourceProvider implements IResourceProvider
     public List<IResource> getListResources( String strResourceTypeName )
     {
         // it is not possible to get the list of mylutece users
-        return new ArrayList<IResource>( 0 );
+        return new ArrayList<>( );
     }
 }
