@@ -43,6 +43,10 @@ import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.LuteceUserService;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -50,9 +54,14 @@ import java.util.Locale;
 /**
  * Resource provider for mylutece users
  */
+@ApplicationScoped
+@Named( "resource-mylutece.myLuteceResourceProvider" )
 public class MyLuteceResourceProvider implements IResourceProvider
 {
     private static final String MESSAGE_LUTECE_USER_DESCRIPTION = "module.resource.mylutece.luteceUserDescription";
+
+    @Inject
+    private ResourceCacheService _resourceCacheService;
 
     private List<IResourceType> _listResourceType;
     private IResourceType _resourceType;
@@ -93,14 +102,14 @@ public class MyLuteceResourceProvider implements IResourceProvider
     public IResource getResource( String strIdResource, String strResourceTypeName )
     {
         String strCacheKey = ResourceCacheService.getResourceCacheKey( strIdResource, strResourceTypeName );
-        MyLuteceResource resource = (MyLuteceResource) ResourceCacheService.getInstance( ).getFromCache( strCacheKey );
+        MyLuteceResource resource = (MyLuteceResource) _resourceCacheService.get( strCacheKey );
         if ( resource == null )
         {
             LuteceUser user = LuteceUserService.getLuteceUserFromName( strIdResource );
             if ( user != null )
             {
                 resource = new MyLuteceResource( user );
-                ResourceCacheService.getInstance( ).putInCache( strCacheKey, resource );
+                _resourceCacheService.put( strCacheKey, resource );
             }
         }
         return resource;
